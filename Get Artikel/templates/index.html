@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Articles</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Health Articles</h1>
+    
+    <div id="articles-list">
+        <h2>All Articles</h2>
+        <ul id="articles">
+            <!-- Articles will be dynamically added here -->
+        </ul>
+    </div>
+
+    <div id="article-details">
+        <h2>Article Details</h2>
+        <div id="article-content">
+            <!-- Article details will be dynamically displayed here -->
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Fetch all articles
+            $.get("/articles", function(data) {
+                var articles = data;
+                var articlesList = $("#articles");
+
+                // Populate articles list
+                articles.forEach(function(article) {
+                    var listItem = $("<li></li>").text(article.title);
+                    listItem.click(function() {
+                        // Fetch article details when clicked
+                        $.get("/articles/" + article.id, function(data) {
+                            var articleContent = $("#article-content");
+                            articleContent.html(
+                                "<h3>" + data.title + "</h3>" +
+                                "<p>" + data.content + "</p>" +
+                                "<p><strong>Category: </strong>" + data.category + "</p>" +
+                                "<p><strong>Selengkapnya: </strong>" + data.link + "</p>"
+                            );
+                        });
+                    });
+
+                    articlesList.append(listItem);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
